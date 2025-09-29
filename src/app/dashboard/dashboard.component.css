@@ -1,0 +1,535 @@
+.budget-form-modal {
+  background: rgba(243, 244, 246, 0.98); /* light bg, nearly opaque */
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.18);
+  padding: 2.5rem 2rem;
+  min-width: 340px;
+  max-width: 95vw;
+  max-height: 85vh;
+  overflow-y:  auto;
+  position: relative;
+}
+.modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: rgba(99,102,241,0.12);
+  color: #374151;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  /* Modal card that holds the Add Budget form. The modal overlay centers this
+     card on screen; this element controls the visual surface (radius, shadow,
+     padding) and vertical scroll inside the modal if content is tall. */
+  height: 32px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-close-btn:hover {
+  background: #6366f1;
+  color: #fff;
+}
+/* Modal overlay for popup form */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  /* Small circular close button placed inside the modal's top-right corner. */
+  height: 100vh;
+  background: rgba(30, 41, 59, 0.45); /* slate-900 with opacity */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+
+/* Add button styles */
+.add-btn {
+  padding: 0.6rem 1.2rem;
+  background-color: #10b981;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  /* Full-screen translucent overlay that centers the modal card. */
+}
+.add-btn:hover {
+  background-color: #374151;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: auto auto;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+  /* Small pill-shaped button used for adding a manual budget row */
+.dashboard-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #1f2937;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.welcome-msg {
+  text-align: center;
+  margin-top: -1rem;
+  /* Main dashboard wrapper that constrains content width and sets page padding */
+  margin-bottom: 1rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Hide the table structure and create card layout */
+.user-table {
+  display: block;
+  width: 100%;
+}
+
+.user-table thead {
+  display: none; /* Hide table headers */
+}
+
+.user-table tbody {
+  /* Small welcome text that displays the resolved logged-in user's name */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.user-table tbody tr {
+  display: block;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.user-table tbody td {
+  display: block;
+  padding: 0.5rem 0;
+  border: none;
+  position: relative;
+}
+
+/* Hide the serial number */
+.user-table tbody td:first-child {
+  display: none;
+}
+
+/* Style each field with labels */
+.user-table tbody td:nth-child(2)::before {
+  content: "Name: ";
+  font-weight: 600;
+  color: #374151;
+}
+
+.user-table tbody td:nth-child(3)::before {
+  content: "Email: ";
+  font-weight: 600;
+  color: #374151;
+}
+
+.user-table tbody td:nth-child(4)::before {
+  content: "Age: ";
+  font-weight: 600;
+  color: #374151;
+}
+
+.user-table tbody td:nth-child(5)::before {
+  content: "Gender: ";
+  font-weight: 600;
+  color: #374151;
+}
+
+.user-table tbody td {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Style the name field prominently */
+.user-table tbody td:nth-child(2) {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.user-table tbody td:nth-child(2)::before {
+  display: none; /* Hide "Name:" label for the prominent name */
+}
+
+/* Email styling */
+.user-table tbody td:nth-child(3) {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+/* Age and Gender styling */
+.user-table tbody td:nth-child(4),
+.user-table tbody td:nth-child(5) {
+  display: inline-block;
+  width: 48%;
+  margin-right: 2%;
+}
+
+/* No users message */
+.no-users {
+  text-align: center;
+  color: #6b7280;
+  font-size: 1.125rem;
+  padding: 3rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 2px dashed #d1d5db;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .dashboard-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .user-table tbody {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Fallback box shown when there are no users to display */
+  .user-table tbody td:nth-child(4),
+  .user-table tbody td:nth-child(5) {
+    display: block;
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .user-table tbody tr {
+    padding: 1rem;
+  }
+}
+
+/* Add Budget / Upload button */
+.add-budget-btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  background-color: #3b82f6;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  margin-bottom: 1.5rem;
+}
+
+.add-budget-btn:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+/* Budget form container */
+.budget-form-container {
+  background-color: #f3f4f6;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  /* Primary control that toggles the budget modal */
+  margin-top: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Budget form heading */
+.budget-form-container h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+/* Form elements */
+.budget-form-container label {
+  display: block;
+  /* Older container styles kept for compatibility — most modal styling is
+     handled by .budget-form-modal. */
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #374151;
+}
+
+.description,
+.amount,
+.budgetGroup,
+.date,
+.department,
+.item,
+.code {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+}
+
+.budget-name {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+}
+
+/* Manual entry submit button */
+.budget-form-container form button[type="submit"] {
+  /* Shared form input styles for consistent sizing and spacing */
+  padding: 0.6rem 1.2rem;
+  background-color: #10b981;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s, transform 0.2s;
+}
+  /* Prominent input used for the session-level budget name */
+
+.budget-form-container form button[type="submit"]:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+/* Bulk upload section */
+.bulk-upload {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+  /* Submit button styles for manual-entry form */
+
+.bulk-upload h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+
+/* Styled file upload button */
+.custom-file{
+  border: 1.5px solid rgba(1, 2, 3, 0.1);
+  border-radius: 20px;
+  /* Section that separates bulk upload UI from manual entry */
+  padding: 2px;
+  font-size: 15px;
+}
+.custom-file::-webkit-file-upload-button{
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.custom-file::-webkit-file-upload-button:hover{
+  background: #374151;
+}
+  /* Styling for the native file input. We style the button portion for
+     WebKit-based browsers to achieve a pill-shaped upload control. */
+
+.progress-indicator {
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+/* Editable bulk table */
+.editable-budget-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.editable-budget-table th,
+.editable-budget-table td {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  /* Small, prominent indicator used temporarily while reading/parsing files */
+  text-align: left;
+  border-radius: 6px;
+}
+
+.editable-budget-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  /* Table used to show and edit uploaded/manual budget rows before submit */
+  color: #374151;
+}
+
+/* Editable inputs in table */
+.editable-budget-table input,
+.editable-budget-table select {
+  width: 90%;
+  padding: 0.4rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+/* Bulk table buttons */
+.editable-budget-table button {
+  padding: 0.4rem 0.8rem;
+  background-color: #ef4444;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+  /* Input styling for fields inside the editable table */
+
+.editable-budget-table button:hover {
+  background-color: #b91c1c;
+}
+
+/* Simple style for validation error messages shown in the modal */
+.form-error {
+  margin-top: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  background: #fff1f2; /* light red */
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* Cancel button styles */
+.cancel-btn {
+  margin-left: 0.7rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #ef4444;
+  color: #fff;
+  /* Remove action button inside the table */
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.cancel-btn:hover {
+  background-color: #374151;
+}
+
+/* submit button styles */
+.submit-btn {
+  margin-left: 1rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #10b981;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.submit-btn:hover {
+  background-color: #374151;
+}
+
+/* draft button styles */
+.draft-btn {
+  margin-left: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #a0a0a0;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.draft-btn:hover {
+  background-color: #374151;
+}
+
+/* Pagination controls below the editable table */
+.pagination {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+.pagination button {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.pagination button[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.pagination button.active {
+  background: #3b82f6;
+  color: #fff;
+  border-color: #3b82f6;
+}
+
+/* Footer row that displays the total amount */
+.editable-budget-table tfoot td {
+  background: #f3f4f6;
+  border-top: 2px solid #e5e7eb;
+  padding: 0.6rem;
+}
+
+
+/* Invalid rows in editable table is highlighted */
+.invalid-row {
+  background-color: rgba(239, 68, 68, 0.06) !important;
+  border-left: 2px solid #f44336 !important;
+}
+
+.invalid-row input,
+.invalid-row select {
+  background-color: #fff;
+  border: 1px solid #f44336;
+}
+
+/* Style for invalid form fields */
+.invalid-field {
+  border-left: 2px solid #f44336 !important;
+  background-color: #fff5f5 !important;
+}

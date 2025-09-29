@@ -1,0 +1,227 @@
+<div class="dashboard-container">
+  <h2>User Dashboard</h2>
+  <p class="welcome-msg" *ngIf="loggedUserName">Welcome {{ loggedUserName }}</p>
+
+  <!-- Add Budget/Upload Tab/Button -->
+  <div class="budget-actions">
+    <button (click)="showBudgetForm = !showBudgetForm" class="add-budget-btn">
+      {{ showBudgetForm ? 'Close Budget Form' : 'Add Budget / Upload' }}
+    </button>
+  </div>
+
+  <table class="user-table" *ngIf="users && users.length > 0; else noUsers">
+    <thead>
+      <tr>
+        <th>Sl. No.</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Age</th>
+        <th>Gender</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.age }}</td>
+        <td>{{ user.gender }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noUsers>
+    <p class="no-users">No users found.</p>
+  </ng-template>
+
+  <!-- Budget Upload Form -->
+  <div *ngIf="showBudgetForm" class="modal-overlay">
+    <div class="budget-form-modal">
+      <button class="modal-close-btn" (click)="showBudgetForm = false" aria-label="Close">&times;</button>
+
+      <h3>Add Budget</h3>
+
+      <!-- Budget Name -->
+      <label for="budgetName">Budget Name:</label>
+      <input id="budgetName" 
+              class="budget-name" 
+              type="text" 
+              [(ngModel)]="budgetName" 
+              (ngModelChange)="onFieldChange('budgetName')" 
+              name="budgetName" 
+              placeholder="Enter budget name"
+              [class.invalid-field]="isFieldInvalid('budgetName')">
+
+      <!-- Category -->
+      <label for="budgetGroup">Category:</label>
+      <select class="budgetGroup" 
+              id="budgetGroup" 
+              name="category" 
+              [(ngModel)]="category" 
+              (ngModelChange)="onFieldChange('category')"
+              [class.invalid-field]="isFieldInvalid('category')">
+        <option value="">-- Select Category --</option>
+        <option value="Event">Event Expenses</option>
+        <option value="Travel">Travel Expenses</option>
+        <option value="Conference">Conference Expenses</option>
+        <option value="Sponsorship">Sponsorships Expenses</option>
+      </select>
+      <!-- Date -->
+      <label for="date">Select Date:</label>
+      <input class="date" 
+              type="date" 
+              id="date" 
+              name="date" 
+              [(ngModel)]="date" 
+              (ngModelChange)="onFieldChange('date')"
+              [class.invalid-field]="isFieldInvalid('date')">
+      <!-- Department -->
+      <label for="department">Department:</label>
+      <select class="department" 
+              id="department" 
+              name="department" 
+              [(ngModel)]="department" 
+              (ngModelChange)="onFieldChange('department')"
+              [class.invalid-field]="isFieldInvalid('department')">
+        <option value="">-- Select Department --</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Operations">Operations</option>
+        <option value="HR">HR</option>
+        <option value="IT">IT</option>
+      </select>
+
+      <hr>
+
+      <!-- Manual entry form -->
+      <h4>Manual Entry</h4>
+      <form (ngSubmit)="onSubmitBudget()">
+        <!-- Code -->
+        <label for="code">Subledger Code:</label>
+        <select class="code" 
+                id="code"
+                name="code"  
+                [(ngModel)]="manualBudget.code" 
+                (ngModelChange)="onManualFieldChange('code')"
+                [class.invalid-field]="isManualFieldInvalid('code')" 
+                required>
+          <option value="">-- Select Subledger Code --</option>
+          <option value="5001">F&B</option>
+          <option value="5002">Utilities</option>
+          <option value="5003">Printing & Stationery</option>
+          <option value="5004">Maintenance</option>
+        </select>
+
+        <div class="manual-entry">
+          <!-- Item -->
+          <label for="item">Item:</label>
+          <input class="item" 
+                  id="item" 
+                  type="text" 
+                  [(ngModel)]="manualBudget.item" 
+                  (ngModelChange)="onManualFieldChange('item')" 
+                  [class.invalid-field]="isManualFieldInvalid('item')"
+                  name="item" 
+                  placeholder="Enter item name"
+                  required>
+          <!-- Amount -->
+          <label for="amount">Amount:</label>
+          <input class="amount" 
+                  id="amount" 
+                  type="number" 
+                  [(ngModel)]="manualBudget.amount" 
+                  (ngModelChange)="onManualFieldChange('amount')" 
+                  [class.invalid-field]="isManualFieldInvalid('amount')"
+                  name="amount"
+                  placeholder="Enter amount" 
+                  required>
+          <!-- Description -->
+          <label for="description">Description:</label>
+          <input class="description" 
+                  id="description" 
+                  type="text" 
+                  [(ngModel)]="manualBudget.description" 
+                  (ngModelChange)="onManualFieldChange('description')" 
+                  [class.invalid-field]="isManualFieldInvalid('description')"
+                  name="description"
+                  placeholder="Enter description" 
+                  required>
+          <button class="add-btn" type="submit">Add Budget</button>
+          <div *ngIf="manualFormError" class="form-error" role="alert">{{ manualFormError }}</div>
+        </div>
+      </form>
+
+      <hr>
+
+      <!-- Bulk Upload Section -->
+      <div class="bulk-upload">
+        <h4>Bulk Upload (Excel)</h4>
+
+        <input class="custom-file" type="file" accept=".xlsx,.xls,.csv" (change)="onFileChange($event)">
+
+        <div *ngIf="uploading">
+          <p>Uploading... <span class="progress-indicator">{{ uploadProgress }}%</span></p>
+        </div>
+
+        <!-- Editable Table for Uploaded Budgets -->
+        <div *ngIf="bulkBudgets.length > 0">
+          <h5>Edit Uploaded Budgets</h5>
+          <table class="editable-budget-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Subledger Code</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let budget of pagedBudgets; let i = index" 
+                  [ngClass]="{'invalid-row': isRowInvalid((currentPage - 1) * pageSize + i)}">                  <td><input type="text" [(ngModel)]="budget.item" (ngModelChange)="computeInvalidRows()"></td>
+                  <td><input type="number" [(ngModel)]="budget.amount" (ngModelChange)="computeInvalidRows()"></td>
+                  <td><input type="text" [(ngModel)]="budget.description" (ngModelChange)="computeInvalidRows()"></td>
+                  <td>
+                    <select [(ngModel)]="budget.code" (ngModelChange)="computeInvalidRows()">
+                      <option value="5001">F&B</option>
+                      <option value="5002">Utilities</option>
+                      <option value="5003">Printing & Stationery</option>
+                      <option value="5004">Maintenance</option>
+                    </select>
+                  </td>
+                  <td><button (click)="removeBulkBudget((currentPage - 1) * pageSize + i)">Remove</button></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="1" style="text-align:right;font-weight:700">Total</td>
+                <td colspan="4" style="font-weight:700">{{ totalAmount | number:'1.2-2' }}</td>
+                <!-- <td colspan="3"></td> -->
+              </tr>
+            </tfoot>
+          </table>
+
+          <!-- Pagination controls -->
+          <div class="pagination" *ngIf="totalPages > 1">
+            <button (click)="prevPage()" [disabled]="currentPage === 1">Prev</button>
+
+            <button *ngFor="let p of [].constructor(totalPages); let idx = index"
+                    (click)="goToPage(idx + 1)"
+                    [class.active]="currentPage === (idx + 1)">
+              {{ idx + 1 }}
+            </button>
+
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+          </div>
+
+          <!-- Final actions -->
+          <button class="submit-btn" (click)="submitBulkBudgets()">Submit All</button>
+          <button class="draft-btn" (click)="draftBulkBudgets()">Save as Draft</button>
+          <button class="cancel-btn" (click)="cancelBulkBudgets()">Cancel</button>
+          <!-- Show a single concise error if any rows are invalid -->
+          <div *ngIf="formError" class="form-error">{{ formError }}</div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
